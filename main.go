@@ -20,28 +20,24 @@ var (
 // 参考 https://www.zhihu.com/column/c_1899172031100069701
 
 func main() {
-	bs, err := os.ReadFile("expandmo95.mix")
-	HandleErr(err)
-	HandleByte(bs)
-
 	// 获取调色板
-	//bs, err := os.ReadFile("ra2.mix")
-	//HandleErr(err)
-	//res := ParseMix(bs)
-	//res = ParseMix(res["cache.mix"])
-	//pal := ParsePal(res["cameo.pal"])
-	//fmt.Println(len(pal))
-	//// 获取图标
-	//bs, err = os.ReadFile("language.mix")
-	//HandleErr(err)
-	//res = ParseMix(bs)
-	//res = ParseMix(res["cameo.mix"])
-	//for key, val := range res {
-	//	if strings.HasSuffix(key, ".shp") {
-	//		shp := ParseShp(val)
-	//		SaveShp(shp, pal, key)
-	//	}
-	//}
+	bs, err := os.ReadFile("ra2.mix")
+	HandleErr(err)
+	res := ParseMix(bs)
+	res = ParseMix(res["cache.mix"])
+	pal := ParsePal(res["cameo.pal"])
+	fmt.Println(len(pal))
+	// 获取图标
+	bs, err = os.ReadFile("language.mix")
+	HandleErr(err)
+	res = ParseMix(bs)
+	res = ParseMix(res["cameo.mix"])
+	for key, val := range res {
+		if strings.HasSuffix(key, ".shp") {
+			shp := ParseShp(val)
+			SaveShp(shp, pal, key)
+		}
+	}
 }
 
 func SaveShp(shp *Shp, pal []*Color, key string) {
