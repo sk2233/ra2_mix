@@ -29,3 +29,13 @@ func TestJson(t *testing.T) {
 	HandleErr(err)
 	os.WriteFile("/Users/bytedance/Documents/go/ra2mix/mix_database.json", bs, 0644)
 }
+
+//func TestReadData(t *testing.T) {
+//	file, err := os.Open("/Users/wepie/Documents/github/ra2_mix/res/global mix database.dat")
+//	HandleErr(err)
+//	count := ReadU32(file)
+//	for i := 0; i < int(count); i++ {
+//		temp := ReadStr(file)
+//		fmt.Println(temp)
+//	}
+//}

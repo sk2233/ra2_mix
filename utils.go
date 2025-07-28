@@ -5,9 +5,9 @@
 package main
 
 import (
-	"bytes"
 	"encoding/binary"
 	"io"
+	"math"
 )
 
 func HandleErr(err error) {
@@ -16,10 +16,8 @@ func HandleErr(err error) {
 	}
 }
 
-func ReadU8(reader *bytes.Reader) uint8 {
-	res, err := reader.ReadByte()
-	HandleErr(err)
-	return res
+func ReadU8(reader io.Reader) uint8 {
+	return ReadBytes(reader, 1)[0]
 }
 
 func ReadU16(reader io.Reader) uint16 {
@@ -30,6 +28,11 @@ func ReadU16(reader io.Reader) uint16 {
 func ReadU32(reader io.Reader) uint32 {
 	res := ReadBytes(reader, 4)
 	return binary.LittleEndian.Uint32(res)
+}
+
+func ReadF32(reader io.Reader) float32 {
+	temp := ReadU32(reader)
+	return math.Float32frombits(temp)
 }
 
 func ReadAny[T any](reader io.Reader) *T {
@@ -44,4 +47,16 @@ func ReadBytes(reader io.Reader, count int) []byte {
 	_, err := reader.Read(res)
 	HandleErr(err)
 	return res
+}
+
+func ReadStr(reader io.Reader) string {
+	bs := make([]byte, 0)
+	for {
+		temp := ReadU8(reader)
+		if temp == 0 {
+			return string(bs)
+		} else {
+			bs = append(bs, temp)
+		}
+	}
 }

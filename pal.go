@@ -14,6 +14,10 @@ type Color struct {
 // 阴影帧中所有非 #0 使用 #1 渲染
 
 func ParsePal(data []byte) []*Color {
+	return ParseColors(data)
+}
+
+func ParseColors(data []byte) []*Color {
 	res := make([]*Color, 0)
 	for i := 0; i < len(data); i += 3 {
 		res = append(res, &Color{AdjustColor(data[i]),

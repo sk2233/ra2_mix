@@ -17,11 +17,9 @@ var (
 	nameSet = map[string]bool{}
 )
 
-// 参考 https://www.zhihu.com/column/c_1899172031100069701
-
 func main() {
 	// 获取调色板
-	bs, err := os.ReadFile("ra2.mix")
+	bs, err := os.ReadFile("res/ra2.mix")
 	HandleErr(err)
 	res := ParseMix(bs)
 	res = ParseMix(res["cache.mix"])
