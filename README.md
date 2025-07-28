@@ -7,13 +7,13 @@ shp：动画序列帧文件，解析见 [shp.go](shp.go)<br>
 vxl：体素模型，解析见 [vxl.go](vxl.go)<br>
 hva：vxl 的动画文件，解析见 [hva.go](hva.go)<br>
 aud：音效文件，解析见 [aud.go](aud.go)<br>
-dat：mix 目录下对应的文件清单，解析见 [dat.go](dat.go) 不过我们是直接使用 [mix_database.json](mix_database.json) 已经解析好的映射文件<br>
 pcx：图片资源文件，解析见 [pcx.go](pcx.go)<br>
+dat：mix 目录下对应的文件清单，解析见 [dat.go](dat.go) 不过我们是直接使用 [mix_database.json](mix_database.json) 已经解析好的映射文件<br>
 ini，txt，pkt：纯文本配置文件<br>
 fnt：点阵字体文件，一般推荐使用自己的字体文件，暂未支持<br>
-vpl：vxl 材质支持，暂未支持<br>
+vpl：vxl 材质属性，暂未支持<br>
 sha：存储阴影数据，暂未支持<br>
-mrf：过场动画资源<br>
+mrf：过场动画资源，暂未支持<br>
 tem，urb，sno，des，ubn，lun：温带地形文件，城市地形文件，雪地地形文件，沙漠地形文件，新城区地形文件，月球地形文件<br>
 ## 解析效果
 ![img.png](img.png)
