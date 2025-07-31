@@ -1,30 +1,42 @@
 package main
 
 import (
-	"fmt"
+	"github.com/go-gl/gl/v4.1-core/gl"
+	"github.com/go-gl/glfw/v3.3/glfw"
+	"github.com/go-gl/mathgl/mgl32"
 	"testing"
 )
 
-func buildMesh(vxl *Vxl) []float32 { // 3 pos  3  clr
-	items := vxl.Limbs[0].Items
-	for x := 0; x < len(items); x++ {
-		for y := 0; y < len(items[x]); y++ {
-			for z := 0; z < len(items[x][y]); z++ {
-				if items[x][y][z] == nil {
-					continue
-				}
-				// TODO 上下左右前后
-
-			}
-		}
-	}
-	return nil
-}
-
 func TestVxl(t *testing.T) {
+	window := NewWindow(1280, 720, "Test")
+
+	shader := LoadShader("res/test")
+	shader.Use()
+	projection := mgl32.Perspective(mgl32.DegToRad(45.0), float32(16)/9, 0.1, 30.0)
+	shader.SetMat4("Projection", projection)
+	shader.SetMat4("Model", mgl32.Ident4())
+
 	data := ReadData("ra2.mix", "local.mix/harv.vxl")
 	vxl := ParseVxl(data)
+	data = ReadData("ra2.mix", "cache.mix/uniturb.pal")
+	pal := ParsePal(data)
+	mesh := BuildMesh(vxl, pal)
+	vao := NewVao(mesh, 3, 3)
 
-	mesh := buildMesh(vxl)
-	fmt.Println(mesh)
+	camera := NewCamera()
+	gl.Enable(gl.DEPTH_TEST)
+	for !window.ShouldClose() {
+		gl.ClearColor(0.1, 0.1, 0.1, 0.1)
+		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+		camera.Update(window)
+
+		shader.Use()
+		shader.SetMat4("View", camera.GetView())
+		vao.Bind()
+		vao.Draw()
+
+		window.SwapBuffers()
+		glfw.PollEvents()
+	}
+	glfw.Terminate()
 }

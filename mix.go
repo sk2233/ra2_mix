@@ -100,7 +100,7 @@ func ParseMix(data []byte) map[string][]byte {
 	fmt.Printf("mix data flag = %d , count = %d , dataSize = %d\n", flag, count, dataSize)
 	// 获取 id -> name  可以缓存不用每次都读取
 	id2Name := make(map[uint32]string)
-	bs, err := os.ReadFile("mix_database.json")
+	bs, err := os.ReadFile("res/mix_database.json")
 	HandleErr(err)
 	err = json.Unmarshal(bs, &id2Name)
 	HandleErr(err)
