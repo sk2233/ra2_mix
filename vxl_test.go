@@ -12,7 +12,7 @@ func TestVxl(t *testing.T) {
 
 	shader := LoadShader("res/test")
 	shader.Use()
-	projection := mgl32.Perspective(mgl32.DegToRad(45.0), float32(16)/9, 0.1, 30.0)
+	projection := mgl32.Perspective(mgl32.DegToRad(45.0), float32(16)/9, 0.01, 10.0)
 	shader.SetMat4("Projection", projection)
 	shader.SetMat4("Model", mgl32.Ident4())
 

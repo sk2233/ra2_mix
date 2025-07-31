@@ -16,7 +16,14 @@ sha：存储阴影数据，暂未支持<br>
 mrf：过场动画资源，暂未支持<br>
 tem，urb，sno，des，ubn，lun：温带地形文件，城市地形文件，雪地地形文件，沙漠地形文件，新城区地形文件，月球地形文件<br>
 ## 解析效果
-![img.png](img.png)
+![img_2.png](img_2.png)<br>
+PCX 图像<br>
+![img_1.png](img_1.png)<br>
+调色板<br>
+![img.png](img.png)<br>
+SHP 图像<br>
+![img_3.png](img_3.png)
+VXL 模型<br>
 ## 项目参考
 https://www.zhihu.com/column/c_1899172031100069701<br>
 https://github.com/OpenRA/OpenRA<br>

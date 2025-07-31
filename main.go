@@ -14,8 +14,8 @@ import (
 func main() {
 	//TestShp()
 	//TestPal()
-	//TestPcx()
-	//return
+	TestPcx()
+	return
 	vxls = make([]string, 0)
 	pals = make([]string, 0)
 	bs, err := os.ReadFile("res/ra2.mix")

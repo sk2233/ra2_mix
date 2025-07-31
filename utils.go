@@ -10,7 +10,6 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/go-gl/mathgl/mgl32"
-	"github.com/hajimehoshi/ebiten/v2"
 	"image"
 	"io"
 	"math"
@@ -84,36 +83,62 @@ func ReadStr(reader io.Reader) string {
 	}
 }
 
-type ImageShow struct {
-	option *ebiten.DrawImageOptions
-	image  *ebiten.Image
+type Texture struct {
+	Texture uint32
 }
 
-func NewImageShow(img image.Image) *ImageShow {
-	return &ImageShow{
-		option: &ebiten.DrawImageOptions{},
-		image:  ebiten.NewImageFromImage(img),
+func (t *Texture) Bind(texture uint32) {
+	gl.ActiveTexture(texture)
+	gl.BindTexture(gl.TEXTURE_2D, t.Texture)
+}
+
+func LoadTexture(rgba *image.RGBA) *Texture {
+	var texture uint32
+	gl.GenTextures(1, &texture)
+	gl.ActiveTexture(gl.TEXTURE0)
+	gl.BindTexture(gl.TEXTURE_2D, texture)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
+	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, int32(rgba.Rect.Dx()), int32(rgba.Rect.Dy()), 0, gl.RGBA, gl.UNSIGNED_BYTE, gl.Ptr(rgba.Pix))
+	gl.GenerateMipmap(gl.TEXTURE_2D)
+	return &Texture{
+		Texture: texture,
 	}
 }
 
-func (i *ImageShow) Update() error {
-	return nil
-}
-
-func (i *ImageShow) Draw(screen *ebiten.Image) {
-	screen.DrawImage(i.image, i.option)
-}
-
-func (i *ImageShow) Layout(w, h int) (int, int) {
-	return w, h
-}
-
-func ShowImage(img image.Image) {
+func ShowImage(img *image.RGBA) {
 	bound := img.Bounds()
-	ebiten.SetWindowSize(bound.Dx(), bound.Dy())
-	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeDisabled)
-	err := ebiten.RunGame(NewImageShow(img))
-	HandleErr(err)
+	window := NewWindow(bound.Dx(), bound.Dy(), "Test")
+
+	shader := LoadShader("res/img")
+	shader.Use()
+	shader.SetI1("Texture", 0)
+	texture := LoadTexture(img)
+	data := []float32{
+		-1.0, 1.0, 0.0, 0.0, // 左上角
+		-1.0, -1.0, 0.0, 1.0, // 左下角
+		1.0, -1.0, 1.0, 1.0, // 右下角
+		-1.0, 1.0, 0.0, 0.0, // 左上角
+		1.0, -1.0, 1.0, 1.0, // 右下角
+		1.0, 1.0, 1.0, 0.0, // 右上角
+	}
+	vao := NewVao(data, 2, 2)
+
+	for !window.ShouldClose() {
+		gl.ClearColor(0.1, 0.1, 0.1, 0.1)
+		gl.Clear(gl.COLOR_BUFFER_BIT)
+
+		shader.Use()
+		texture.Bind(gl.TEXTURE0)
+		vao.Bind()
+		vao.Draw()
+
+		window.SwapBuffers()
+		glfw.PollEvents()
+	}
+	glfw.Terminate()
 }
 
 func buildPoint(x int, y int, z int, scale float32, clr *Color) []float32 {
@@ -329,8 +354,7 @@ type Camera struct {
 }
 
 func NewCamera() *Camera {
-	//return &Camera{Pos: mgl32.Vec3{1.4515511, 19.742188, -14.045877}, Dir: mgl32.Vec3{-0.19201341, -0.52491015, 1.6393855}}
-	return &Camera{Pos: mgl32.Vec3{1.5510671, 39.7809, -22.97922}, Dir: mgl32.Vec3{-0.2757190, 0.6243588, 1.5918888}}
+	return &Camera{Pos: mgl32.Vec3{4.5405855, -1.2734333, 4.104122}, Dir: mgl32.Vec3{-0.39915586, 0.55325437, -0.73114574}.Normalize()}
 }
 
 func (c *Camera) GetView() mgl32.Mat4 {
