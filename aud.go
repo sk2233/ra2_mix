@@ -14,6 +14,14 @@ type AudHeader struct {
 	Format     uint8  // 1 WestwoodCompressed  99 ImaAdpcm
 }
 
+func (h *AudHeader) GetChannelCount() int {
+	if h.Flags&0x1 == 0x1 {
+		return 2
+	} else {
+		return 1
+	}
+}
+
 type Aud struct {
 	Header *AudHeader
 	Data   []byte

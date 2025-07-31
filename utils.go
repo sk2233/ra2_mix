@@ -6,9 +6,27 @@ package main
 
 import (
 	"encoding/binary"
+	"github.com/hajimehoshi/ebiten/v2"
+	"image"
 	"io"
 	"math"
+	"os"
+	"strings"
 )
+
+const (
+	BasePath = "/Users/wepie/Documents/github/ra2_mix/res/"
+)
+
+func ReadData(file, path string) []byte {
+	bs, err := os.ReadFile(BasePath + file)
+	HandleErr(err)
+	items := strings.Split(path, "/")
+	for _, item := range items {
+		bs = ParseMix(bs)[item]
+	}
+	return bs
+}
 
 func HandleErr(err error) {
 	if err != nil {
@@ -59,4 +77,36 @@ func ReadStr(reader io.Reader) string {
 			bs = append(bs, temp)
 		}
 	}
+}
+
+type ImageShow struct {
+	option *ebiten.DrawImageOptions
+	image  *ebiten.Image
+}
+
+func NewImageShow(img image.Image) *ImageShow {
+	return &ImageShow{
+		option: &ebiten.DrawImageOptions{},
+		image:  ebiten.NewImageFromImage(img),
+	}
+}
+
+func (i *ImageShow) Update() error {
+	return nil
+}
+
+func (i *ImageShow) Draw(screen *ebiten.Image) {
+	screen.DrawImage(i.image, i.option)
+}
+
+func (i *ImageShow) Layout(w, h int) (int, int) {
+	return w, h
+}
+
+func ShowImage(img image.Image) {
+	bound := img.Bounds()
+	ebiten.SetWindowSize(bound.Dx(), bound.Dy())
+	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeDisabled)
+	err := ebiten.RunGame(NewImageShow(img))
+	HandleErr(err)
 }
