@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	BasePath = "/Users/wepie/Documents/github/ra2_mix/res/"
+	BasePath = "/you_path/res/"
 )
 
 func ReadData(file, path string) []byte {
